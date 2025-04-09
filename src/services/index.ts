@@ -15,3 +15,8 @@ export const forgetPasswordMail=async (payload:any)=>{
     const response=await axios.post(`${BASEURL}/api/forget-password`,payload);
     return response?.data
 }
+
+export const userRestPassService=async (payload:any)=>{
+    const response=await axios.post(`${BASEURL}/v1/api/forget-password`,payload);
+    return response?.data
+}
