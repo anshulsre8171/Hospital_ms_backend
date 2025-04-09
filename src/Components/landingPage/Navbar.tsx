@@ -12,7 +12,7 @@ const Navbar = () => {
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"#",name:"Blog"},
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"#", name:"Contact" },
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"routes/login", name:"Login"},
-  { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"./register", name:"Register"},
+  { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"/register", name:"Register"},
 ]
   return (
     <>
