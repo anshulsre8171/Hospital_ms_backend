@@ -11,7 +11,7 @@ const Navbar = () => {
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link",href:"#", name:"Doctor" },
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"#",name:"Blog"},
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"#", name:"Contact" },
-  { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"routes/login", name:"Login"},
+  { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"/login", name:"Login"},
   { liClass:"nav-item px-2 fw-semibold", aClass:"nav-link", href:"/register", name:"Register"},
 ]
   return (
@@ -52,7 +52,7 @@ const Navbar = () => {
         
        {nav?.map((items,keys)=>{
         return(<>
-        <li key={keys+1} className={items.liClass} >
+        <li key={keys} className={items.liClass} >
           <Link className={items.aClass}  href={items.href}>{items.name}</Link>
         </li>
         </>)

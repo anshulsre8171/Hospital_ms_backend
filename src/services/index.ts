@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASEURL = `http://localhost:9000`
+const BASEURL = `http://localhost:9001`
 
 
 export const userAuthRegister = async (payload: any) => {
@@ -8,6 +8,6 @@ export const userAuthRegister = async (payload: any) => {
 }
 
 export const userAuthLogin = async (payload: any) => {
-    const response = await axios.post(`${BASEURL}/v1/api/login`, payload);
+    const response = await axios.post(`${BASEURL}/api/login`, payload);
     return response?.data
 }
