@@ -5,14 +5,18 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaBell } from "react-icons/fa";
 import { BsChatLeftDotsFill } from "react-icons/bs";
-import { FaRegCircleUser } from "react-icons/fa6";
+// import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import  {logout} from '@/Redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import { userSession } from '@/helpers/userSession';
 const DashboardNavbar = ({ sideNav }: any) => {
-  
+    const userData = userSession();
+    const imageUrl=`http://localhost:9001/api/user/${userData?.id}/${userData?.userType}`
+    console.log();
+    
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -60,7 +64,8 @@ const DashboardNavbar = ({ sideNav }: any) => {
                         <div className="me-2 mt-2 fw-bold s text-center rounded-circle"><CiSearch /></div>
                         <div className="me-2 mt-2 s text-center rounded-circle"><FaBell /></div>
                         <div className="me-2 mt-2 s text-center rounded-circle"> <BsChatLeftDotsFill /></div>
-                        <div className="me-2 mt-2 s text-center rounded-circle"> <FaRegCircleUser /> </div>
+                        <div className="me-2 mt-2 s text-center rounded-circle"> <img src={imageUrl} height={20} width={20} className='me-2 s p-1 text-center rounded-circle'/> </div> 
+                        {/* <FaRegCircleUser /> */}
                         <div className="me-2 mt-2 s text-center rounded-circle"  onClick={logoutUser}><RiLogoutBoxLine /></div>
                     </div>
                 </div>
