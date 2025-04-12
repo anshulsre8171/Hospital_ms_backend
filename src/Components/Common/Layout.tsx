@@ -18,12 +18,12 @@ const Layout = ({ children }: any) => {
   const adminMenu: any = [
     {
       title: "User List",
-      link: "/admin-userlist",
+      link: "/admin-dr-userList",
       icon: <FaUserAlt />,
     },
     {
       title: "Department",
-      link: "admin/admin-department",
+      link: "/admin-department",
       icon: <TbNewSection />,
     },
   ];
