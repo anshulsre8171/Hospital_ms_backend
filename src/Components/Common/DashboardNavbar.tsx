@@ -8,15 +8,21 @@ import { BsChatLeftDotsFill } from "react-icons/bs";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { RiLogoutBoxLine } from "react-icons/ri";
-
-
-
+import  {logout} from '@/Redux/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 const DashboardNavbar = ({ sideNav }: any) => {
   
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const dispatch=useDispatch();
+    const router=useRouter()
 
+    const logoutUser = () => {
+        dispatch(logout());
+        router.push('/login')
+    }
 
     return (
         <>
@@ -55,7 +61,7 @@ const DashboardNavbar = ({ sideNav }: any) => {
                         <div className="me-2 mt-2 s text-center rounded-circle"><FaBell /></div>
                         <div className="me-2 mt-2 s text-center rounded-circle"> <BsChatLeftDotsFill /></div>
                         <div className="me-2 mt-2 s text-center rounded-circle"> <FaRegCircleUser /> </div>
-                        <div className="me-2 mt-2 s text-center rounded-circle" ><RiLogoutBoxLine /></div>
+                        <div className="me-2 mt-2 s text-center rounded-circle"  onClick={logoutUser}><RiLogoutBoxLine /></div>
                     </div>
                 </div>
             </div>
