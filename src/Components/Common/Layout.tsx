@@ -10,7 +10,7 @@ import { userSession } from "@/helpers/userSession";
 
 const Layout = ({ children }: any) => {
   const userData = userSession();
-  //console.log(userData,'hhh')
+  console.log(userData,'hhh')
   
   const [data, setData] = useState(false);
   const [sideNav, setSideNav] = useState([]); 
@@ -23,7 +23,7 @@ const Layout = ({ children }: any) => {
     },
     {
       title: "Department",
-      link: "/admin-department",
+      link: "admin/admin-department",
       icon: <TbNewSection />,
     },
   ];

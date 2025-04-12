@@ -15,7 +15,7 @@ import { userSession } from '@/helpers/userSession';
 const DashboardNavbar = ({ sideNav }: any) => {
     const userData = userSession();
     const imageUrl=`http://localhost:9001/api/user/${userData?.id}/${userData?.userType}`
-    console.log();
+    //console.log();
     
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);

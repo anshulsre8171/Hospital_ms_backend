@@ -30,13 +30,13 @@ const dispatch=useDispatch()
     if (res?.code == 200) {
       swalFire("Auth", res.message, "success")
       dispatch(login(res?.data))
-      if (res?.data.profile === 'Admin') {
+      if (res?.data.userType ==='admin') {
         // Admin dashboard
         routers.push('./Dashboard/admin');
-      } else if (res?.data.profile === 'Doctor') {
+      } else if (res?.data.userType === 'doctor') {
         // doctor dashboard
         routers.push('./Dashboard/doctor');
-      } else {
+      } else if (res?.data.userType === 'patient')  {
         // Agar role kuch aur ho, default redirect (optional)
         routers.push('./Dashboard/patient');
       }
