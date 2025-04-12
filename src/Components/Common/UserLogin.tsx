@@ -38,7 +38,7 @@ const dispatch=useDispatch()
         routers.push('./Dashboard/doctor');
       } else {
         // Agar role kuch aur ho, default redirect (optional)
-        routers.push('./Dashboard/patient/dashpage');
+        routers.push('./Dashboard/patient');
       }
     } else {
       swalFire("Authentication", res.message, "error")

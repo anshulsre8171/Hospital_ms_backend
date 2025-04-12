@@ -82,7 +82,6 @@ const FooterSection = () => {
       <div className="row">
         <div className="col-md-10 py-2">
           <div>
-            span
           </div>
         </div>
       </div>
