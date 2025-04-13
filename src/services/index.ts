@@ -3,7 +3,11 @@ const BASEURL = `http://localhost:9001`
 
 
 export const userAuthRegister = async (payload: any) => {
-    const response = await axios.post(`${BASEURL}/api/register`, payload);
+    console.log(payload,"jjjjjjjjjjjj");
+    
+    const response = await axios.post(`${BASEURL}/api/register`, payload, { headers: {
+'Content-Type': 'multipart/form-data',
+      }});
     return response?.data
 }
 

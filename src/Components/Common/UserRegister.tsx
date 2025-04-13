@@ -1,9 +1,9 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { userAuthRegister } from '@/services';
+import { getDepartmentListData, userAuthRegister } from '@/services';
 import { swalFire } from '@/helpers/SwalFire';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 const doctorSchema = yup.object().shape({
   name: yup.string().min(2).max(50).required("Name is required"),
-  departmentId: yup.string().oneOf(["Cardiology", "Dermatology", "Neurology", "Pediatrics", "Orthopedics"], "Invalid department").required(),
+  departmentId: yup.string().required(),
   specialist: yup.string().min(2).max(100).required("Expertise is required"),
   qualifications: yup.string().min(2).max(100).required("Qualifications are required"),
   contact: yup.string().matches(/\d{10}/, "Contact must be a 10-digit number").required(),
@@ -23,7 +23,7 @@ const doctorSchema = yup.object().shape({
   email: yup.string().email("Invalid email address").required(),
   profile: yup.mixed().test("fileSize", "File is required", (value:any) => value?.length > 0).required(),
   userType: yup.string().oneOf(["doctor", "patient"], "Invalid User Type").required(),
-
+  availableDays: yup.array().of(yup.string().oneOf(["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",]) ).min(1, "Please select At least one day") .required("Required field"),
 });
 
 const patientSchema = yup.object().shape({
@@ -35,13 +35,25 @@ const patientSchema = yup.object().shape({
   profile: yup.mixed().test("fileSize", "File is required", (value:any) => value?.length > 0).required(),
   userType: yup.string().oneOf(["doctor", "patient"], "Invalid User Type").required(),
 });
+const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 const UserRegister = () => {
   const routers=useRouter()
 
   const [userType, setUserType] = useState("patient");
   const isDoctor = userType === "doctor";
-  
+   
+  const [department,setDepartment]=useState([])
+     
+  const getDepartmentList=async ()=>{
+  const res=await getDepartmentListData()
+  //console.log(res.data,"ggggggaag");
+  setDepartment(res?.data)
+  }
+  useEffect(()=>{
+    getDepartmentList()
+  },[])
+
   const schema:any = isDoctor ? doctorSchema : patientSchema;
   const { register, handleSubmit, formState: { errors } }:any = useForm({
     resolver: yupResolver(schema),
@@ -51,27 +63,33 @@ const UserRegister = () => {
    // console.log(data);
     
     const formData :any =new FormData()
-    formData.append("name",data.name)
-    formData.append("email",data.email)
-    formData.append("contact",data.contact)
-    formData.append("profile",data.profile[0])
-    formData.append("gender",data.gender)
-    formData.append("age",data.age)
-    formData.append("userType",data.userType)
-    formData.append("departmentId",data.departmentId)
-    formData.append("specialist",data.specialist)
-    formData.append("qualifications",data.qualifications)
-    formData.append("fees",data.fees)
-    formData.append("address",data.address)
-    formData.append("experience",data.experience)
+
+    // Append availableDays as an array
+    data?.availableDays.forEach((day: any) => {
+    formData.append("availableDays", day);
+    });
+    formData.append("name",data?.name)
+    formData.append("email",data?.email)
+    formData.append("contact",data?.contact)
+    formData.append("profile",data?.profile[0])
+    formData.append("gender",data?.gender)
+    formData.append("age",data?.age)
+    formData.append("userType",data?.userType)
+    formData.append("departmentId",data?.departmentId)
+    formData.append("specialist",data?.specialist)
+    formData.append("qualifications",data?.qualifications)
+    formData.append("fees",data?.fees)
+    formData.append("address",data?.address)
+    formData.append("experience",data?.experience)
 
    //console.log(formData);
-
+  
       const res=await userAuthRegister(formData)
+      console.log(res);
+      
       if(res?.code==201){
         swalFire("Auth",res.message,"success") 
         routers.push("./login")
-
       }else{  
         swalFire("Auth",res.message,"error")
       } 
@@ -146,12 +164,10 @@ const UserRegister = () => {
             
             <div className='col-md-6 mb-4'>
               <select {...register("departmentId")} className='myform-control text-light form-control ps-0 text-light rounded-0 mt-1'>
-                <option className='t' value="">Select Department</option>
-                <option className='t' value="Cardiology">Cardiology</option>
-                <option className='t' value="Dermatology">Dermatology</option>
-                <option className='t' value="Neurology">Neurology</option>
-                <option className='t' value="Pediatrics">Pediatrics</option>
-                <option className='t' value="Orthopedics">Orthopedics</option>
+              <option className="t" selected disabled >--Select Your Department--</option>
+              {department.map((item:any, idx)=>{
+                      return <option className="t" key={idx} value={item?.id}>{item?.name}</option>
+                     })}
               </select>
               {errors.departmentId && <div className="text-danger fw-bold">{errors.departmentId?.message}</div>}
             </div>
@@ -205,7 +221,17 @@ const UserRegister = () => {
               </select>
               {errors.gender && <div className="text-danger fw-bold">{errors.gender?.message}</div>}
             </div>
-
+            <div className="row">
+                    <div className="col-sm-12">
+                      {days.map((day, index) => (
+                        <label className="me-2" key={index}>
+                          <input type="checkbox" {...register("availableDays")} value={day} className="me-1"/>
+                          <span className="">{day}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {errors.availableDays && (<div className="text-danger fw-bold">{errors.availableDays?.message}</div>)}
+                  </div>
             <input type="submit" value="Register" className='w-100 mx-auto d-block text-light my-btn-hover1 btn mt-4 my-bg-color1' />
             </div>
           </>
