@@ -38,3 +38,12 @@ export const getDepartmentListData =async()=>{
     const response=await axios.get(`${BASEURL}/api/admin-get-department`)
     return response?.data
 } 
+
+export const getdoctByDepartmentIDService = async (id:any,token:any) => {
+    const response = await axios.get(`${BASEURL}/api/get-doctor-by-departmentId?departmentId=${id}`,{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    });
+    return response?.data
+}
