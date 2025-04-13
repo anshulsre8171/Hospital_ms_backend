@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { GiHamburgerMenu, } from "react-icons/gi";
-import { FaUserAlt ,FaHandHoldingMedical} from "react-icons/fa";
+import { FaUserAlt ,FaHandHoldingMedical, FaTachometerAlt} from "react-icons/fa";
 import { BiSolidInjection } from "react-icons/bi";
 import { TbNewSection } from "react-icons/tb";  
 import DashboardNavbar from "./DashboardNavbar";
@@ -36,9 +36,9 @@ const Layout = ({ children }: any) => {
   ];
   const patientMenu: any = [
     {
-      title: "Appointment",
-      link: "/patient-appointment",
-      icon: <FaHandHoldingMedical />,
+      title: "Dashboard",
+      link: "/Dashboard/patient",
+      icon: <FaTachometerAlt/>,
     },
     {
       title: "Appointment",
@@ -46,7 +46,7 @@ const Layout = ({ children }: any) => {
       icon: <FaHandHoldingMedical />,
     },    {
       title: "Appointment",
-      link: "/patient-appointment",
+      link: "#",
       icon: <FaHandHoldingMedical />,
     },
   ];

@@ -1,4 +1,5 @@
 import Layout from '@/Components/Common/Layout'
+import PatientDashboardContent from '@/Components/Patient/PatientDashboardContent'
 import React from 'react'
 
 
@@ -6,7 +7,9 @@ import React from 'react'
 const page = () => {  
   return (
     <>
-    <Layout/>
+    <Layout>
+      <PatientDashboardContent/>
+    </Layout>
     </>
   )
 }

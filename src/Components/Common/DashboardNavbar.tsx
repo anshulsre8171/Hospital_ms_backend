@@ -58,7 +58,7 @@ const DashboardNavbar = ({ sideNav }: any) => {
                         </Offcanvas>
                     </div>
                     <div className='mx-2 mt-1'>
-                        <h3><Link href="/Dashboard/admin" className='rounded-pill d-flex align-items-center nav-link  text-center'>Dashboard</Link></h3>
+                        <h3><Link href="#" className='rounded-pill d-flex align-items-center nav-link  text-center'>Dashboard</Link></h3>
                     </div>
                     <div className='icon-container1 ms-auto d-flex justify-content-between'>
                         <div className="me-2 mt-2 fw-bold s text-center rounded-circle"><CiSearch /></div>
