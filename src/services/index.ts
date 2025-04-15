@@ -47,3 +47,12 @@ export const getdoctByDepartmentIDService = async (id:any,token:any) => {
     });
     return response?.data
 }
+
+export const BookAppointmentController=async(data:any,token:any)=>{
+    const response= await axios.post(`${BASEURL}/api/doctor-appointment-book`,data,{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    });
+    return response?.data
+}

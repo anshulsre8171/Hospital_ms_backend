@@ -1,11 +1,14 @@
 "use client"
+import { swalFire } from "@/helpers/SwalFire"
 import { userSession } from "@/helpers/userSession"
 import { PatientWrap } from "@/HOC/PatientWrap"
-import { getDepartmentListData, getdoctByDepartmentIDService,  } from "@/services"
+import { BookAppointmentController, getDepartmentListData, getdoctByDepartmentIDService, } from "@/services"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as yup from 'yup'
+
 const schema = yup
   .object({
     patientId: yup.string().required(),
@@ -19,6 +22,9 @@ const schema = yup
     startTime: yup.string().required(),
   })
 function PatientAppointment() {
+
+  const router = useRouter()
+
   const [departmentarr, setDepartmentArr] = useState([]);
   const [docterArr, setDoctorArr] = useState([])
   const [slecteddepId, setSelectedDepartmentId] = useState(null)
@@ -30,7 +36,6 @@ function PatientAppointment() {
   const fetchDept = async () => {
     const res = await getDepartmentListData();
     setDepartmentArr(res?.data)
-    setDoctorArr([])
   }
 
   const fetchDoctorByDeptId = async () => {
@@ -39,24 +44,42 @@ function PatientAppointment() {
   }
   useEffect(() => {
     if (slecteddepId) {
-    fetchDoctorByDeptId()
+      fetchDoctorByDeptId()
     }
   }, [slecteddepId])
 
   useEffect(() => {
     setValue('patientId', userData?.id)
     fetchDept()
+  
   }, [])
 
 
   const handleDepDropChange = (e: any) => {
     setSelectedDepartmentId(e?.target?.value)
+    setValue('doctorId', '');
+    // setDoctorArr([]);
   }
-  //console.log(docterArr, "doctoer");
+  console.log(docterArr, "doctoer");
+
+  const appoint = async (data: any) => {
+    //   console.log(data);    
+    const res: any = await BookAppointmentController(data, userData?.jwtToken)
+    console.log(res);
+    if (res?.code == 201) {
+      swalFire("Appointment ", res.message, "success")
+    } else if (res.code == 401) {
+      swalFire("Appointment ", res.message, "error")
+      router.push('/login')
+    }
+    else {
+      swalFire("Appointment", res.message, "error")
+    }
+  }
 
   return (
     <>
-      <form onSubmit={handleSubmit((data) => console.log(data))}>
+      <form onSubmit={handleSubmit((data) => appoint(data))}>
         <div className="container-fluid">
           <div className="row">
             <div className="col-sm-2"></div>
@@ -89,7 +112,7 @@ function PatientAppointment() {
                 <div className="col-sm-6 mb-5">
                   <span className="text-light">Department Id</span>
                   <select className="form-control"  {...register('departmentId')} onChange={(e: any) => handleDepDropChange(e)}>
-                  <option selected disabled>--Select Department--</option>
+                    <option selected disabled>--Select Department--</option>
                     {departmentarr?.map((item: any, index: any) => {
                       return (
                         <option key={index} value={item?.id}> {item?.name}</option>
@@ -99,9 +122,11 @@ function PatientAppointment() {
                   {errors.departmentId && <p className='text-danger'>{errors.departmentId.message}</p>}
 
                   <span className="text-light">Doctor Name</span>
-                  <select className="form-control"  {...register('doctorId')} onChange={(e: any) => handleDepDropChange(e)}>
-                  <option selected disabled>--Select Doctor--</option>
+                  <select className="form-control"  {...register('doctorId')} >
+                    <option selected disabled value="">--Select Doctor--</option>
                     {docterArr?.map((item: any, index: any) => {
+                    //  console.log(item.id);
+
                       return (
                         <option key={index} value={item?.id}> {item?.name}</option>
                       )
@@ -111,7 +136,7 @@ function PatientAppointment() {
 
                   <span className="text-light">AppointmentType</span>
                   <select {...register('appointmentType')} className="form-control">
-                  <option className="t" disabled selected>--Select AppointmentType--</option>
+                    <option className="t" disabled selected>--Select AppointmentType--</option>
                     <option>General</option>
                     <option>Emergency</option>
                   </select>
@@ -122,7 +147,7 @@ function PatientAppointment() {
                   {errors.payment && <p className='text-danger'>{errors.payment.message}</p>} */}
                   <span className="text-light">Appointment Fees</span>
 
-                <select {...register('payment')} className="form-control">
+                  <select {...register('payment')} className="form-control">
                     <option className="t" disabled selected>--Select Fees--</option>
                     <optgroup className="t" label="General Duty">
                       <option className="t">500</option>
@@ -131,7 +156,7 @@ function PatientAppointment() {
                       <option className="t">800</option>
                     </optgroup>
                   </select>
-                  {errors.payment&&<p className="text-danger fw-bold ">{errors.payment?.message}</p>}
+                  {errors.payment && <p className="text-danger fw-bold ">{errors.payment?.message}</p>}
                 </div>
 
               </div>

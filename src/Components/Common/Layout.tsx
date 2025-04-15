@@ -10,7 +10,7 @@ import { userSession } from "@/helpers/userSession";
 
 const Layout = ({ children }: any) => {
   const userData = userSession();
-  console.log(userData,'hhh')
+ // console.log(userData,'hhh')
   
   const [data, setData] = useState(false);
   const [sideNav, setSideNav] = useState([]); 
@@ -29,6 +29,11 @@ const Layout = ({ children }: any) => {
   ];
   const doctorMenu: any = [
     {
+      title: "Dashboard",
+      link: "/Dashboard/doctor",
+      icon: <FaTachometerAlt/>,
+    },
+    {
       title: "Appointments",
       link: "/doctor-apprequest",
       icon: <BiSolidInjection/>,
@@ -41,12 +46,12 @@ const Layout = ({ children }: any) => {
       icon: <FaTachometerAlt/>,
     },
     {
-      title: "Appointment",
-      link: "/patient-appointment",
+      title: `AppointmentEmg.`,
+      link: "/patient-appointment/emergency",
       icon: <FaHandHoldingMedical />,
     },    {
-      title: "Appointment",
-      link: "#",
+      title: `AppointmentGen.`,
+      link:  "/patient-appointment/general",
       icon: <FaHandHoldingMedical />,
     },
   ];
@@ -70,7 +75,7 @@ const Layout = ({ children }: any) => {
           <div
             className={
               data == false
-                ? "col-lg-2 px-0  d-none d-lg-block dashboard-left-container bg-dark"
+                ? "col-lg-2 px-0  d-none d-lg-block dashboard-left-container"
                 : "col-lg-1 px-0  d-none d-lg-block dashboard-left-container"
             }
           >
@@ -81,8 +86,8 @@ const Layout = ({ children }: any) => {
                   : "left-top bg-dark d-flex  align-items-center "
               }
             >
-              <div className={data == false ? "fs-5 text-light" : "d-none"}>
-                {userData?.userType} Dashboard
+              <div className={data == false ? "fs-5 text-light p-1 mt-2 " : "d-none"}>
+                <span>{userData?.userType}</span> Dashboard
               </div>
               <div className="mx-auto">
                 {" "}

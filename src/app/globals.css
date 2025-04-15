@@ -231,10 +231,14 @@ color: rgba(255, 255, 255, 0.2);;
 }
 
 .left-top, .right-top{
-    height: 8vh;
+     min-height: 25px;
+     max-height: 50px;
+     line-height: 20px;
+     text-align: center;
+     text-transform: capitalize;
 }
 .left-bottom{
-  
+  min-width: 210px;
     background-color: #413f40;
 }
 .hamburger-style{
@@ -303,3 +307,4 @@ font-size: 20px;
 ::placeholder{
     color:white
 }  */
+
