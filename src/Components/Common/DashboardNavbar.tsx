@@ -37,7 +37,7 @@ const DashboardNavbar = ({ sideNav }: any) => {
                         <Offcanvas className="d-lg-none" style={{ width: "330px" }} show={show} onHide={handleClose}>
                             <Offcanvas.Header closeButton className="d-lg-none">
                                 <Offcanvas.Title>
-                                    <h3 className='px-2 pt-2'>Admin Dashboard</h3>
+                                    <h3 className='px-2 pt-2 left-top'> <span>{userData?.userType}</span>  Dashboard</h3>
                                 </Offcanvas.Title>
                             </Offcanvas.Header>
                             <Offcanvas.Body>

@@ -56,3 +56,21 @@ export const BookAppointmentController=async(data:any,token:any)=>{
     });
     return response?.data
 }
+
+export const AppointmentBookingGen=async(data:any,token:any)=>{
+    const response= await axios.post(`${BASEURL}/api/doctor-appointment-bookGen`,data,{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    });
+    return response?.data
+}
+
+export const getdocdaytimeBydocIdService = async (id:any,token:any) => {
+    const response = await axios.get(`${BASEURL}/api/get-doctordaytime-by-doctortId?doctorId=${id}`,{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    });    
+    return response?.data
+}

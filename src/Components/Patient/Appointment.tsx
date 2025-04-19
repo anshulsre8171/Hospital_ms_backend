@@ -60,7 +60,7 @@ function PatientAppointment() {
     setValue('doctorId', '');
     // setDoctorArr([]);
   }
-  console.log(docterArr, "doctoer");
+ // console.log(docterArr, "doctoer");
 
   const appoint = async (data: any) => {
     //   console.log(data);    
