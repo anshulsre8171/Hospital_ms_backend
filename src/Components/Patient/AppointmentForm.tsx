@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import * as yup from 'yup';
-
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { swalFire } from "@/helpers/SwalFire";
@@ -9,7 +8,6 @@ import { PatientWrap } from "@/HOC/PatientWrap";
 import { AppointmentBookingGen, getDepartmentListData, getdocdaytimeBydocIdService, getdoctByDepartmentIDService, getDoctorShedule } from "@/services";
 import { useRouter } from "next/navigation";
 import { userSession } from "@/helpers/userSession";
-import { time } from "console";
 
 const schema = yup
   .object({
@@ -21,16 +19,15 @@ const schema = yup
     disease: yup.string().required(),
     payment: yup.string().required(),
     fees: yup.string().required(),
-   // symptoms: yup.string().required(),
-   // appointmentType: yup.string().required(),
-   //date: yup.string().required(),
     day:yup.string().required("day is required"),
     time:yup.string().required("time slot is required"),
-
   })
+
   const AppointmentForm = () => {
 
   const router = useRouter()
+  const userData = userSession();
+  //console.log(userData);
 
   const [departmentarr, setDepartmentArr] = useState([]);
   const [docterArr, setDoctorArr] = useState([])
@@ -39,16 +36,11 @@ const schema = yup
   const [selectedayTime, setSelectedayTime] = useState([]);
   const [selectedFees, setSelectedFees] = useState([]);
  //console.log(selectedDay);
-  
 
   const [slecteddepId, setSelectedDepartmentId] = useState(null)
   const [slecteddocId, setSelectedDoctortId] = useState(null)
-  
 
-  const userData = userSession();
-  //console.log(userData);
-
-  const { register, handleSubmit,watch,reset, setValue, formState: { errors } } = useForm({ resolver: yupResolver(schema) })
+  const { register, handleSubmit,watch, setValue, formState: { errors } } = useForm({ resolver: yupResolver(schema) })
 
   const fetchDept = async () => {
     const res = await getDepartmentListData();
@@ -69,16 +61,15 @@ const schema = yup
     //console.log(res?.data[0].fees,"fessssss");
     setSelectedDay(res?.data[0]?.availableDays)
     setSelectedTime(res?.data[0]?.availableTimes)
-    setSelectedFees(res?.data[0]?.fees)
-    
+    setSelectedFees(res?.data[0]?.fees) 
   }
+
   useEffect(() => {
- //   setValue('patientId', userData?.id)
+ // setValue('patientId', userData?.id)
     setValue('gender', userData?.gender)
     setValue('contact', userData?.contact)
     fetchDept()
   }, [])
-
 
   useEffect(() => {
     if (slecteddepId) {
@@ -86,20 +77,18 @@ const schema = yup
     }
   }, [slecteddepId])
 
-useEffect(()=>{
-  if(slecteddocId){
-    fetchDoctorDayTimeByDocId()
-    checkDoctorShedule()
-
-  }
-},[slecteddocId])
+  useEffect(()=>{
+    if(slecteddocId){
+      fetchDoctorDayTimeByDocId()
+      checkDoctorShedule()
+   }
+  },[slecteddocId])
 
 const [values, setBookedTimes] = useState<string[]>([]);
 const Days:any = watch("day"); // assuming you're using react-hook-form
 
 const checkDoctorShedule=async()=>{
   const res=await getDoctorShedule(slecteddocId,userData?.jwtToken)
-  //console.log(res,"daysss");
   setSelectedayTime(res?.data)
 } 
 
@@ -135,8 +124,6 @@ useEffect(() => {
   }
 
   const AppointmentFunction = async (da: any) => {  
-   // console.log(da,"aaaaaaaaaa");
-     
     const res: any = await AppointmentBookingGen(da, userData?.jwtToken)
    // console.log(res);
    await alert("Your Appointment is Temprory Booked, Booking complete After pay bill")
@@ -152,8 +139,6 @@ useEffect(() => {
     }
   }
   return (
-
- 
       <div className="container-fluid p-4" style={{ background: "#1e1e1e", minHeight: "100vh", color: "white" }}>
         <div className="row">
           {/* Left Section */}
