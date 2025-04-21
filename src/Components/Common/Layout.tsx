@@ -20,6 +20,10 @@ const Layout = ({ children }: any) => {
       title: "User List",
       link: "/admin-dr-userList",
       icon: <FaUserAlt />,
+    },    {
+      title: "Graph-Status",
+      link: "/admin-GraphDetails",
+      icon: <TbNewSection />,
     },
     {
       title: "Department",

@@ -4,7 +4,7 @@ import AdminStatus from '@/Components/Admin/AdminStatus'
 const page = () => {
   return (
    <Layout> 
-    <AdminStatus/>
+      <AdminStatus/>
    </Layout>    
   )
 }
