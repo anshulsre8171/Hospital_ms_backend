@@ -308,3 +308,7 @@ font-size: 20px;
     color:white
 }  */
 
+select option:disabled {
+  color: #888888 !important;/* light gray or any color you like */
+  /*background-color: #f9e6e6; /* optional: match your theme */
+}

@@ -74,3 +74,12 @@ export const getdocdaytimeBydocIdService = async (id:any,token:any) => {
     });    
     return response?.data
 }
+
+export const getDoctorShedule=async(doctorId:any,token:any)=>{
+    const response =await axios.get(`${BASEURL}/api/get-doctordaytime-by-doctortIdfordisable?doctorId=${doctorId}`,{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    })
+    return response.data
+}

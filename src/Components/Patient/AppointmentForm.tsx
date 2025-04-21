@@ -6,9 +6,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { swalFire } from "@/helpers/SwalFire";
 import { PatientWrap } from "@/HOC/PatientWrap";
-import { AppointmentBookingGen, getDepartmentListData, getdocdaytimeBydocIdService, getdoctByDepartmentIDService } from "@/services";
+import { AppointmentBookingGen, getDepartmentListData, getdocdaytimeBydocIdService, getdoctByDepartmentIDService, getDoctorShedule } from "@/services";
 import { useRouter } from "next/navigation";
 import { userSession } from "@/helpers/userSession";
+import { time } from "console";
 
 const schema = yup
   .object({
@@ -35,8 +36,9 @@ const schema = yup
   const [docterArr, setDoctorArr] = useState([])
   const [selectedDay, setSelectedDay] = useState([]);
   const [selectedTime, setSelectedTime] = useState([]);
+  const [selectedayTime, setSelectedayTime] = useState([]);
   const [selectedFees, setSelectedFees] = useState([]);
-  //console.log(selectedFees);
+ //console.log(selectedDay);
   
 
   const [slecteddepId, setSelectedDepartmentId] = useState(null)
@@ -46,7 +48,7 @@ const schema = yup
   const userData = userSession();
   //console.log(userData);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({ resolver: yupResolver(schema) })
+  const { register, handleSubmit,watch,reset, setValue, formState: { errors } } = useForm({ resolver: yupResolver(schema) })
 
   const fetchDept = async () => {
     const res = await getDepartmentListData();
@@ -55,9 +57,12 @@ const schema = yup
 
   const fetchDoctorByDeptId = async () => {
     const res = await getdoctByDepartmentIDService(slecteddepId, userData?.jwtToken)
-    setDoctorArr(res?.data)
-  }
-
+    if(res.error==true){
+      router.push('/login')
+    }else{
+    setDoctorArr(res?.data)}
+  }   
+   
   const fetchDoctorDayTimeByDocId =async()=>{
     const res=await getdocdaytimeBydocIdService(slecteddocId,userData?.jwtToken)
     //console.log(res.data,"doctorss");
@@ -84,28 +89,60 @@ const schema = yup
 useEffect(()=>{
   if(slecteddocId){
     fetchDoctorDayTimeByDocId()
+    checkDoctorShedule()
+
   }
 },[slecteddocId])
 
+const [values, setBookedTimes] = useState<string[]>([]);
+const Days:any = watch("day"); // assuming you're using react-hook-form
 
-  const handleDepDropChange = (e: any) => {
+const checkDoctorShedule=async()=>{
+  const res=await getDoctorShedule(slecteddocId,userData?.jwtToken)
+  //console.log(res,"daysss");
+  setSelectedayTime(res?.data)
+} 
+
+useEffect(() => {
+  if (Days && selectedayTime?.length) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // start of day
+
+    const times = selectedayTime.filter((item: any) =>{
+      const appointmentDate = new Date(item.appointment_createdAt);
+      //console.log(item.appointment_createdAt);
+       appointmentDate.setHours(0, 0, 0, 0);
+      return (
+        item.appointment_day === Days &&
+        appointmentDate >= today // only future or today’s bookings
+      );
+      })
+      .map((item: any) => item.appointment_time);
+    setBookedTimes(times); // only times booked for the selected day   
+  }
+}, [Days, selectedayTime]);
+
+   const handleDepDropChange = (e: any) => {
     setSelectedDepartmentId(e?.target?.value)
     setValue('doctorId', '');
     setValue('day', '');
+    setValue('time', '');
   }
   const handleDocDropChange = (e: any) => {
     setSelectedDoctortId(e?.target?.value)
     setValue('day', '');
+    setValue('time', '');
   }
 
   const AppointmentFunction = async (da: any) => {  
-    console.log(da,"aaaaaaaaaa");
+   // console.log(da,"aaaaaaaaaa");
      
     const res: any = await AppointmentBookingGen(da, userData?.jwtToken)
    // console.log(res);
-   await alert("pay bill")
+   await alert("Your Appointment is Temprory Booked, Booking complete After pay bill")
     if (res?.code == 201) {
       swalFire("Appointment ", res.message, "success")
+    
     } else if (res.code == 401) {
       swalFire("Appointment ", res.message, "error")
       router.push('/login')
@@ -128,10 +165,10 @@ useEffect(()=>{
                   <input {...register("patientId")} type="text" value={userData?.id} placeholder="hh" className="myform-control form-control ps-0 text-light rounded-0 mt-2" />
                   {errors.patientId && <div className="text-danger fw-bold ">{errors.patientId?.message}</div>}
 
-                  <input {...register("gender")} type="text"  className="myform-control form-control ps-0 text-light rounded-0 mt-2" />
+                  <input {...register("gender")} type="text" value={userData?.gender} className="myform-control form-control ps-0 text-light rounded-0 mt-2" />
                  {errors.gender&&<p className="text-danger fw-bold ">{errors.gender?.message}</p>}
 
-                  <input type="text" {...register("contact")} className="myform-control form-control ps-0 text-light rounded-0 mt-2" />
+                  <input type="text" {...register("contact")} value={userData?.contact} className="myform-control form-control ps-0 text-light rounded-0 mt-2" />
                   {errors.contact&&<p className="text-danger fw-bold ">{errors.contact?.message}</p>}
                 
                   <input type="text" {...register("disease")} placeholder="enter your disease" className="myform-control form-control ps-0 text-light rounded-0 mt-2" />
@@ -143,7 +180,7 @@ useEffect(()=>{
                 </div>
                 <div className="col-6 py-3">
                   <select {...register("departmentId")} className="myform-control form-control ps-0 text-light rounded-0 mt-2 "onChange={(e:any)=>{handleDepDropChange(e)}}>
-                    <option  className="t" disabled selected>Select Department</option>
+                    <option  className="t" value="" disabled selected>Select Department</option>
                   {departmentarr.map((item:any,index:any)=>{
                     //console.log(item.id);
                     return(
@@ -177,11 +214,11 @@ useEffect(()=>{
                   {errors.day&&<p className="text-danger fw-bold ">{errors.day?.message}</p>} 
 
                    <select {...register("time")} className="myform-control form-control ps-0 text-light rounded-0 mt-2" >
-                    <option className="t" disabled selected>Select Time</option>
+                    <option className="t" value="" disabled selected>Select Time</option>
                     {
                       selectedTime.map((item:any,index:any)=>{
                         return(<>
-                    <option className="t" key={index}>{item} </option>
+                    <option className="t" disabled={values.includes(item)} key={index} value={item}>{item} </option>
                         </>)
                       })
                     }
@@ -189,16 +226,9 @@ useEffect(()=>{
                   {errors.time&&<p className="text-danger fw-bold ">{errors.time?.message}</p>} 
 
                   <select {...register("fees")} className="myform-control form-control ps-0 text-light rounded-0 mt-2">
-                    <option className="t" disabled selected>Select Fees</option>
+                    <option className="t" value="" disabled selected>Select Fees</option>
                     <optgroup className="t" label="General Duty">
                     <option className="t" >{selectedFees}</option>
-                       {/* {
-                        selectedFees?.map((item:any,index:any)=>{
-                          return(
-                            <option className="t" value={item} key={index}>{item.fees}</option>
-                          )
-                        })
-                      }  */}
                     </optgroup>
                     <optgroup className="t" label="Emergency fees">
                       <option className="t">800</option>
@@ -207,7 +237,7 @@ useEffect(()=>{
                   {errors.fees&&<p className="text-danger fw-bold ">{errors.fees?.message}</p>}
 
                   <select {...register("payment")} className="myform-control form-control ps-0 text-light rounded-0 mt-2">
-                    <option className="t" disabled selected>Select Payment Mode</option>
+                    <option className="t" value="" disabled selected>Select Payment Mode</option>
                     <option className="t">online </option>
                     <option className="t">Cash</option>
                   </select>
