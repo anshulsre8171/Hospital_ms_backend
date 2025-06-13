@@ -13,7 +13,7 @@ const Carousel = () => {
         <div className='my-3'> <h1 className='banner-heading'>Your Most Trusted Health Partner</h1> </div>
         <div className='my-3'>
           <p className="my-color1">
-          A repudiandae ipsam labore ipsa voluptatum quidem quae laudantium quisquam aperiam maiores sunt fugit, deserunt rem suscipit placeat.
+          A repudianda quidem quae laudantium quisquam aperiam maiores sunt fugit, deserunt rem suscipit placeat.
           </p>
         </div>
         <div className='my-3'>
